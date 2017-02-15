@@ -1,12 +1,12 @@
 use std::fmt::Debug;
 use std::cmp::PartialOrd;
-use std::clone::Clone;
+use std::marker::Copy;
 
 macro_rules! insertion_sort{
     ($print:expr, $func_name: ident) =>( 
-        pub fn $func_name<T: Debug + PartialOrd + Clone>(arr: &mut [T]){
+        pub fn $func_name<T: Debug + PartialOrd + Copy>(arr: &mut [T]){
             for x in 1..arr.len(){
-                let value = arr[x].clone();
+                let value = arr[x];
                 let mut comparison_index = x - 1;
                 if $print{println!("Value: {:?}, Comparison Value: {:?}", value, arr[comparison_index])}
                 loop{
@@ -15,7 +15,7 @@ macro_rules! insertion_sort{
                         if $print{println!("Swap back original: {:?}", arr)}
                         break;
                     }
-                    arr[comparison_index + 1] = arr[comparison_index].clone();
+                    arr[comparison_index + 1] = arr[comparison_index];
                     if $print{println!("Swap: {:?}", arr)}
                     if comparison_index == 0{
                         arr[comparison_index] = value;
