@@ -1,11 +1,13 @@
 #![cfg_attr(feature="clippy", feature(plugin))]
 pub mod sort;
 use sort::*;
+pub mod datastructures;
+use datastructures::*;
 
 fn main() {
     let mut input_f = [9.5, 7.4, 9.2, 2.3, 9.9, 4.2, 25.9, 13.2];
     let mut input_i = [4, 2, 9, 0, 5, 4, 1, 9];
-    let print = true;
+    let print = false; 
     match print{
         true => {
             insertion_sort_debug(&mut input_f);
@@ -18,4 +20,8 @@ fn main() {
     }
     println!("{:?}", input_f);
     println!("{:?}", input_i);
+
+    let mut bst = BST{root: None};
+    bst.tree_insert(5);
+    bst.tree_insert(2);
 }
