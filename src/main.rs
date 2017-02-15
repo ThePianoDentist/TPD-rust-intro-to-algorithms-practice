@@ -1,3 +1,4 @@
+#![cfg_attr(feature="clippy", feature(plugin))]
 pub mod sort;
 use sort::*;
 
