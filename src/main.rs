@@ -21,7 +21,19 @@ fn main() {
     println!("{:?}", input_f);
     println!("{:?}", input_i);
 
-    let mut bst = BST{root: None};
-    bst.tree_insert(5);
-    bst.tree_insert(2);
+    let mut bst = Node{left: None, right: None, value: 5};
+    bst.insert(6);
+    bst.insert(22);
+    bst.insert(15);
+    bst.insert(3);
+    bst.insert(1);
+    bst.insert(50);
+    bst.print_inorder();
+    bst.print_preorder();
+    bst.print_postorder();
+    //bst.root.tree_insert(5).tree_insert(2).tree_insert(13).tree_insert(40);//.unwrap().print_in_order();
+    //bst.root.tree_insert(2);
+    //bst.root.tree_insert(13);
+    //bst.root.tree_insert(40);
+    //bst.root.unwrap().print_in_order();
 }
