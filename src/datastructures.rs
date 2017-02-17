@@ -2,17 +2,7 @@ use std::fmt::Debug;
 use std::cmp::PartialOrd;
 use std::ops::Mul;
 use std::marker::Copy;
-/*pub struct RedBlackTree{
-    
-}
 
-pub struct RedBlackNode{
-    red: bool,
-    parent: RedBlackNode,
-    left: RedBlackNode,
-    right: RedBlackNode,
-    value: i64
-}*/
 
 #[derive(Debug)]
 pub struct Node<T>{
@@ -21,7 +11,7 @@ pub struct Node<T>{
     pub value: T
 }
 
-impl<T> Node<T> where T: Debug + Mul + PartialOrd + Clone{
+impl<T> Node<T> where T: Debug + Mul<Output = T> + PartialOrd + Copy{
     pub fn insert(&mut self, new_val: T){
         let current_node = match new_val < self.value{
             true => &mut self.left,
@@ -96,7 +86,20 @@ impl<T> Node<T> where T: Debug + Mul + PartialOrd + Clone{
 
     pub fn square(&mut self){
         println!("Squaring tree");
-        let square = |x: &mut T| x = &mut ((*x) * (*x));
+        let square = |x: &mut T| *x = (*x) * (*x);
         self.preorder(&square);
     }
 }
+
+pub enum Colour{
+    Red,
+    Black
+}
+
+pub struct RedBlackNode<T>{
+    colour: Colour,
+    left: Option<Box<Node<T>>>,
+    right: Option<Box<Node<T>>>,
+    value: T
+}
+
