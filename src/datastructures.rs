@@ -1,3 +1,5 @@
+use std::fmt::Debug;
+use std::cmp::PartialOrd;
 
 /*pub struct RedBlackTree{
     
@@ -12,14 +14,14 @@ pub struct RedBlackNode{
 }*/
 
 #[derive(Debug)]
-pub struct Node{
-    pub left: Option<Box<Node>>,
-    pub right: Option<Box<Node>>,
-    pub value: i64
+pub struct Node<T>{
+    pub left: Option<Box<Node<T>>>,
+    pub right: Option<Box<Node<T>>>,
+    pub value: T
 }
 
-impl Node{
-    pub fn insert(&mut self, new_val: i64){
+impl<T> Node<T> where T: Debug + PartialOrd{
+    pub fn insert(&mut self, new_val: T){
         let current_node = match new_val < self.value{
             true => &mut self.left,
             false => &mut self.right
@@ -34,20 +36,20 @@ impl Node{
     }
 
     
-    pub fn inorder(&mut self, func: &Fn(i64)){
+    pub fn inorder(&mut self, func: &Fn(&mut T)){
         match self.left{
             Some(ref mut left) => left.inorder(func),
             None => {}
         };
-        func(self.value);
+        func(&mut self.value);
         match self.right{
             Some(ref mut right) => right.inorder(func),
             None => {}
         };
     }
 
-    pub fn preorder(&mut self, func: &Fn(i64)){
-        func(self.value);
+    pub fn preorder(&mut self, func: &Fn(&mut T)){
+        func(&mut self.value);
         match self.left{
             Some(ref mut left) => left.inorder(func),
             None => {}
@@ -58,7 +60,7 @@ impl Node{
         };
     }
 
-    pub fn postorder(&mut self, func: &Fn(i64)){
+    pub fn postorder(&mut self, func: &Fn(&mut T)){
         match self.left{
             Some(ref mut left) => left.inorder(func),
             None => {}
@@ -67,26 +69,26 @@ impl Node{
             Some(ref mut right) => right.inorder(func),
             None => {}
         };
-        func(self.value);
+        func(&mut self.value);
     }
 
     pub fn print_inorder(&mut self){
         println!("In-order Traversal");
-        let print = |x: i64| println!("{:?}", x);
+        let print = |x: &mut T| println!("{:?}", x);
         self.inorder(&print);
         println!("\n");
     }
 
     pub fn print_preorder(&mut self){
         println!("Pre-order Traversal");
-        let print = |x: i64| println!("{:?}", x);
+        let print = |x: &mut T| println!("{:?}", x);
         self.preorder(&print);
         println!("\n");
     }
 
     pub fn print_postorder(&mut self){
         println!("Post-order Traversal");
-        let print = |x: i64| println!("{:?}", x);
+        let print = |x: &mut T| println!("{:?}", x);
         self.postorder(&print);
         println!("\n");
     }
