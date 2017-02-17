@@ -1,6 +1,7 @@
 use std::fmt::Debug;
 use std::cmp::PartialOrd;
-
+use std::ops::Mul;
+use std::marker::Copy;
 /*pub struct RedBlackTree{
     
 }
@@ -20,7 +21,7 @@ pub struct Node<T>{
     pub value: T
 }
 
-impl<T> Node<T> where T: Debug + PartialOrd{
+impl<T> Node<T> where T: Debug + Mul + PartialOrd + Clone{
     pub fn insert(&mut self, new_val: T){
         let current_node = match new_val < self.value{
             true => &mut self.left,
@@ -91,5 +92,11 @@ impl<T> Node<T> where T: Debug + PartialOrd{
         let print = |x: &mut T| println!("{:?}", x);
         self.postorder(&print);
         println!("\n");
+    }
+
+    pub fn square(&mut self){
+        println!("Squaring tree");
+        let square = |x: &mut T| x = &mut ((*x) * (*x));
+        self.preorder(&square);
     }
 }

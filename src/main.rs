@@ -31,6 +31,8 @@ fn main() {
     bst.print_inorder();
     bst.print_preorder();
     bst.print_postorder();
+    bst.square();
+    bst.print_inorder();
     //bst.root.tree_insert(5).tree_insert(2).tree_insert(13).tree_insert(40);//.unwrap().print_in_order();
     //bst.root.tree_insert(2);
     //bst.root.tree_insert(13);
