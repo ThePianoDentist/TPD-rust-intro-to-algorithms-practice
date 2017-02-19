@@ -115,6 +115,7 @@ macro_rules! node_trait{
         }
 
         pub fn re_order(&mut self){
+            //YEAH THIS ACTUAKLKY DOESNT WORK
             // does this actually work? need some more test cases
             //  also what is complexity of this?
             // while left bigger
