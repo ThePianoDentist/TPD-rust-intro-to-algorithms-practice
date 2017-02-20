@@ -114,19 +114,12 @@ macro_rules! node_trait{
         }
 
         pub fn reverse(&mut self){
+            swap(&mut self.left, &mut self.right);
             if let Some(ref mut left) = self.left{
-                if let Some(ref mut right) = self.right{
-                    swap(left, right);
-                }
-                else{
-                    return left.reverse();
-                }
+                left.reverse();
             }
-            else if let Some(ref mut right) = self.right{
-                return right.reverse();
-            }
-            else{
-                return;
+            if let Some(ref mut right) = self.right{
+                right.reverse();
             }
         }
 
