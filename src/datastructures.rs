@@ -109,33 +109,57 @@ macro_rules! node_trait{
         pub fn reciprocal(&mut self){
             // check dividing by 0 breaking
             println!("Taking reciprocal of tree");
-            let one = 1;
             let recip = |x: &mut T| *x = T::one() / (*x);
             self.preorder(&recip);
         }
 
+        pub fn reverse(&mut self){
+            if let Some(ref mut left) = self.left{
+                if let Some(ref mut right) = self.right{
+                    swap(left, right);
+                }
+                else{
+                    return left.reverse();
+                }
+            }
+            else if let Some(ref mut right) = self.right{
+                return right.reverse();
+            }
+            else{
+                return;
+            }
+        }
+
         pub fn re_order(&mut self){
+            println!("Not implemented!");
+            return
+            // leaving this for now as most functions applied to whole tree would require
+            // blind reversing. simpler than full re-order.
+            // http://stackoverflow.com/questions/2577098/how-to-convert-a-binary-tree-to-binary-search-tree-in-place-i-e-we-cannot-use
+            // for what im trying to do
             //YEAH THIS ACTUAKLKY DOESNT WORK
             // does this actually work? need some more test cases
             //  also what is complexity of this?
-            // while left bigger
-            //    swap with left
-            //    sort left
-            // while right bigger
-            //      swap with right
-            //      sort right
+            println!("Value: {:?}", self.value);
             if let Some(ref mut left) = self.left{
+                println!("Left value: {:?}", left.value);
                 while left.value > self.value{    
+                    println!("Swap left");
                     swap(&mut left.value, &mut self.value);
                     left.re_order();
                 }
             }
+            else{println!("No left");}
             if let Some(ref mut right) = self.right{
+                println!("Right value: {:?}", right.value);
                 while right.value < self.value{
+                    println!("Swap right...{:?}", self.value);
                     swap(&mut right.value, &mut self.value);
+                    println!("to ... {:?}", self.value);
                     right.re_order();
                 }
             }
+            else{println!("No right");}
         }
     })
 }
