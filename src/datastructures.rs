@@ -15,6 +15,7 @@ pub struct Node<T>{
     pub value: T
 }
 
+#[derive(PartialEq)]
 pub enum Colour{
     Red,
     Black
@@ -22,9 +23,25 @@ pub enum Colour{
 
 pub struct RedBlackNode<T>{
     pub colour: Colour,
-    pub left: Option<Box<Node<T>>>,
-    pub right: Option<Box<Node<T>>>,
+    pub left: Option<Box<RedBlackNode<T>>>,
+    pub right: Option<Box<RedBlackNode<T>>>,
     pub value: T
+}
+
+trait Constructor<T>{
+    fn new(new_val: T) -> Self;
+}
+
+impl<T> Constructor<T> for Node<T>{
+    fn new(new_val: T) -> Node<T>{
+        Node{value: new_val, left: None, right: None}
+    }
+}
+
+impl<T> Constructor<T> for RedBlackNode<T>{
+    fn new(new_val: T) -> RedBlackNode<T>{
+        RedBlackNode{value: new_val, left: None, right: None, colour: Colour::Red}
+    }
 }
 
 macro_rules! node_trait{
@@ -37,7 +54,8 @@ macro_rules! node_trait{
             };
             match current_node{
                 &mut Some(ref mut lower_node) => lower_node.insert(new_val),
-                &mut None => {let new_node = Node{left: None, right: None, value: new_val};
+                &mut None => {
+                    let new_node = $U::new(new_val);
                     let new_boxed = Some(Box::new(new_node));
                     *current_node = new_boxed;
                 }
@@ -79,29 +97,6 @@ macro_rules! node_trait{
             };
             func(&mut self.value);
         }
-
-        /*pub fn preorder_node(&self, func: &Fn(&mut $U<T>) -> Option<&$U<T>>){
-           // hmmm its just simpler to just reuse code and rewrite out traversals. they're pretty
-           // simple really.
-           // should just rename them to inorder_all_values etc
-            match func(&mut self){
-                Some(x) => {return x},
-                None => {}
-            };
-            match self.left{
-                Some(ref mut left) => left.inorder(func),
-                None => {}
-            };
-            match self.right{
-                Some(ref mut right) => right.inorder(func),
-                None => {}
-            };
-        }*/
-
-        /*pub fn search2(&self, search_value: T) -> Option<&$U<T>>{
-            let find = |x: &mut T| ;
-            return self.preorder_node(&find);
-        }*/
 
         pub fn search(&self, search_value: T) -> Option<&$U<T>>{
             // TODO Im ignoring my preorder func. can I refactor?
@@ -273,6 +268,31 @@ impl<T> IsValid for Node<T> where T: Debug + PartialOrd{
         }
         else if let Some(ref right) = self.right{
             if right.value < self.value{
+                return false;
+            }
+            else{
+                return right.is_valid();
+            }
+        }
+        else{
+            return true;
+        }
+        
+    }
+}
+
+impl<T> IsValid for RedBlackNode<T> where T: Debug + PartialOrd{
+    fn is_valid(&self) -> bool {
+        if let Some(ref left) = self.left{
+            if left.value > self.value || left.colour == self.colour{
+                return false;
+            }
+            else{
+                return left.is_valid();
+            }
+        }
+        else if let Some(ref right) = self.right{
+            if right.value < self.value || right.colour == self.colour{
                 return false;
             }
             else{
