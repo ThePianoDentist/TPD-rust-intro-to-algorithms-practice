@@ -256,3 +256,32 @@ macro_rules! node_trait{
 
 node_trait!(Node);
 node_trait!(RedBlackNode);
+
+pub trait IsValid{
+    fn is_valid(&self) -> bool;
+}
+
+impl<T> IsValid for Node<T> where T: Debug + PartialOrd{
+    fn is_valid(&self) -> bool {
+        if let Some(ref left) = self.left{
+            if left.value > self.value{
+                return false;
+            }
+            else{
+                return left.is_valid();
+            }
+        }
+        else if let Some(ref right) = self.right{
+            if right.value < self.value{
+                return false;
+            }
+            else{
+                return right.is_valid();
+            }
+        }
+        else{
+            return true;
+        }
+        
+    }
+}

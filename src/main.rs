@@ -33,7 +33,10 @@ fn main() {
     bst.print_postorder();
     bst.square();
     bst.print_inorder();
-    let found = bst.search(1);
+    println!("Legit? {:?}", bst.is_valid());
+    {let mut found = bst.search(1);}
+    bst.reciprocal();
+    println!("Legit? {:?}", bst.is_valid());
     let mut rb_bst = RedBlackNode{left: None, right: None, value: 10.0, colour: Colour::Red};
     rb_bst.insert(22.9);
     rb_bst.insert(13.1);
