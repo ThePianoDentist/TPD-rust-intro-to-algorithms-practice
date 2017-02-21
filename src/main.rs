@@ -33,16 +33,22 @@ fn main() {
     bst.print_postorder();
     bst.square();
     bst.print_inorder();
+    let found = bst.search(1);
     let mut rb_bst = RedBlackNode{left: None, right: None, value: 10.0, colour: Colour::Red};
     rb_bst.insert(22.9);
     rb_bst.insert(13.1);
     rb_bst.insert(-12.2);
+    rb_bst.search(13.1);
+    match rb_bst.search(6.2){
+        Some(x) => {println!("{:?}", x.value)},
+        None => {println!("No x for you :(")}
+    };
     //rb_bst.square();
     rb_bst.re_order();
     rb_bst.print_inorder();
     rb_bst.reciprocal();
     rb_bst.print_inorder();
-    rb_bst.reverse();
+    rb_bst.smart_reverse(0.0);
     rb_bst.print_inorder();
     //bst.root.tree_insert(5).tree_insert(2).tree_insert(13).tree_insert(40);//.unwrap().print_in_order();
     //bst.root.tree_insert(2);

@@ -6,6 +6,7 @@ use std::marker::Copy;
 use std::mem::swap;
 pub extern crate num_traits;
 use num_traits::One;
+use num_traits::Zero;
 
 #[derive(Debug)]
 pub struct Node<T>{
@@ -28,7 +29,7 @@ pub struct RedBlackNode<T>{
 
 macro_rules! node_trait{
     ($U:ident) => (
-    impl<T> $U<T> where T: Debug + Mul<Output = T> + Div<Output = T> + One + PartialOrd + Copy{
+    impl<T> $U<T> where T: Debug + Mul<Output = T> + Div<Output = T> + One + Zero + PartialOrd + Copy{
         pub fn insert(&mut self, new_val: T){
             let current_node = match new_val < self.value{
                 true => &mut self.left,
@@ -79,6 +80,46 @@ macro_rules! node_trait{
             func(&mut self.value);
         }
 
+        /*pub fn preorder_node(&self, func: &Fn(&mut $U<T>) -> Option<&$U<T>>){
+           // hmmm its just simpler to just reuse code and rewrite out traversals. they're pretty
+           // simple really.
+           // should just rename them to inorder_all_values etc
+            match func(&mut self){
+                Some(x) => {return x},
+                None => {}
+            };
+            match self.left{
+                Some(ref mut left) => left.inorder(func),
+                None => {}
+            };
+            match self.right{
+                Some(ref mut right) => right.inorder(func),
+                None => {}
+            };
+        }*/
+
+        /*pub fn search2(&self, search_value: T) -> Option<&$U<T>>{
+            let find = |x: &mut T| ;
+            return self.preorder_node(&find);
+        }*/
+
+        pub fn search(&self, search_value: T) -> Option<&$U<T>>{
+            // TODO Im ignoring my preorder func. can I refactor?
+            if self.value == search_value{
+                println!("Found value: {:?}", search_value);
+                return Some(self)
+            }
+            match self.left{
+                Some(ref left) => left.search(search_value),
+                None => {None}
+            };
+            match self.right{
+                Some(ref right) => right.search(search_value),
+                None => {None}
+            };
+            return None
+        }
+
         pub fn print_inorder(&mut self){
             println!("In-order Traversal");
             let print = |x: &mut T| println!("{:?}", x);
@@ -122,6 +163,62 @@ macro_rules! node_trait{
                 right.reverse();
             }
         }
+        /*
+        // Reverse only if same sign
+        // Re-orders bst in case of reciprocal of mixed sign tree
+        pub fn smart_reverse(&mut self){
+            let mut do_swap = true;
+            if let Some(ref left) = self.left{
+                if let Some(ref right) = self.right{
+                    if left.value * right.value < T::zero(){
+                        do_swap = false;
+                    }
+                }
+            }
+            if do_swap{
+                swap(&mut self.left, &mut self.right);
+            }
+            if let Some(ref mut left) = self.left{
+                left.smart_reverse();
+            }
+            if let Some(ref mut right) = self.right{
+                right.smart_reverse();
+            }
+        }
+        */
+        // Reverse only if same sign
+        // Re-orders bst in case of reciprocal of mixed sign tree
+        // no it does not lol!!! Think it needs balanced tree for reverse to re-order correctly?
+        pub fn smart_reverse(&mut self, parent_val: T){
+            let mut do_swap = true;
+            if let Some(ref left) = self.left{
+                if let Some(ref right) = self.right{
+                    if left.value * right.value < T::zero(){
+                        do_swap = false;
+                    }
+                }
+                else{
+                    if parent_val * left.value < T::zero(){
+                        do_swap = false;
+                    }
+                }
+            }
+            else if let Some(ref right) = self.right{
+                if parent_val * right.value < T::zero(){
+                    do_swap = false;
+                }
+            }
+            if do_swap{
+                swap(&mut self.left, &mut self.right);
+            }
+            if let Some(ref mut left) = self.left{
+                left.smart_reverse(self.value);
+            }
+            if let Some(ref mut right) = self.right{
+                right.smart_reverse(self.value);
+            }
+        }
+        
 
         pub fn re_order(&mut self){
             println!("Not implemented!");
