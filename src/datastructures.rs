@@ -61,7 +61,43 @@ macro_rules! node_trait{
                 }
             };
         }
-
+        
+        // This removes both of a duplicate
+        pub fn remove(&mut self, value: T){
+            match self.left{
+                Some(ref mut left) => {
+                    if left.value == value{
+                        left = match (left.left, left.right){
+                            (Some(ref mut l_left), Some(ref mut l_right)) => {l_left},
+                            (Some(ref mut l_left), None) => l_left,
+                            (None, Some(ref mut l_right)) => l_right,
+                            (None, None) => None
+                        };
+                    }
+                    else{
+                        left.remove(value);
+                    }
+                },
+                None => {}
+            };
+            /*
+            match self.right{
+                Some(ref right) => { 
+                    if right.value == value{
+                        *right = match (right.left, right.right){
+                            (Some(ref r_left), Some(ref r_right)) => {r_left},
+                            (Some(ref r_left), None) => r_left,
+                            (None, Some(ref r_right)) => r_right,
+                            (None, None) => None
+                        };
+                    }
+                    else{
+                        right.remove(value);
+                    }
+                },
+                None => {}
+            };*/
+        }
         pub fn inorder(&mut self, func: &Fn(&mut T)){
             match self.left{
                 Some(ref mut left) => left.inorder(func),
