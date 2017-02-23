@@ -61,6 +61,16 @@ macro_rules! node_trait{
                 }
             };
         }
+
+        pub fn minimum(self) -> $U<T>{
+            // think this is naive. think I have to check right subtrees as well
+            if self.left.is_none(){
+                return self
+            }
+            else{
+                return self.left.unwrap().minimum()
+            }
+        }
         
         // This removes both of a duplicate
         pub fn remove(&mut self, value: T){
@@ -68,7 +78,7 @@ macro_rules! node_trait{
                 Some(ref mut left) => {
                     if left.value == value{
                         left = match (left.left, left.right){
-                            (Some(ref mut l_left), Some(ref mut l_right)) => {l_left},
+                            (Some(ref mut l_left), Some(ref mut l_right)) => {l_left}, // replace with minimum func
                             (Some(ref mut l_left), None) => l_left,
                             (None, Some(ref mut l_right)) => l_right,
                             (None, None) => None
