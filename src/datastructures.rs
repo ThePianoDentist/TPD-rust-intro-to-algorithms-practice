@@ -4,6 +4,7 @@ use std::ops::Mul;
 use std::ops::Div;
 use std::marker::Copy;
 use std::mem::swap;
+use std::iter::Take;
 pub extern crate num_traits;
 use num_traits::One;
 use num_traits::Zero;
@@ -21,6 +22,7 @@ pub enum Colour{
     Black
 }
 
+#[derive(Debug)]
 pub struct RedBlackNode<T>{
     pub colour: Colour,
     pub left: Option<Box<RedBlackNode<T>>>,
@@ -77,11 +79,11 @@ macro_rules! node_trait{
             match self.left{
                 Some(ref mut left) => {
                     if left.value == value{
-                        left = match (left.left, left.right){
-                            (Some(ref mut l_left), Some(ref mut l_right)) => {l_left}, // replace with minimum func
-                            (Some(ref mut l_left), None) => l_left,
-                            (None, Some(ref mut l_right)) => l_right,
-                            (None, None) => None
+                        match (left.left, left.right){
+                            (Some(ref mut l_left), Some(ref mut l_right)) => {left = l_left}, // replace with minimum func
+                            (Some(ref mut l_left), None) => {left = l_left},
+                            (None, Some(ref mut l_right)) => {left = l_right},
+                            (None, None) => {left.take()}
                         };
                     }
                     else{
