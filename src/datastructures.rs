@@ -16,18 +16,18 @@ pub struct Node<T>{
     pub value: T
 }
 
-#[derive(PartialEq)]
-pub enum Colour{
-    Red,
-    Black
-}
-
 #[derive(Debug)]
 pub struct RedBlackNode<T>{
     pub colour: Colour,
     pub left: Option<Box<RedBlackNode<T>>>,
     pub right: Option<Box<RedBlackNode<T>>>,
     pub value: T
+}
+
+#[derive(PartialEq, Debug)]
+pub enum Colour{
+    Red,
+    Black
 }
 
 trait Constructor<T>{
@@ -75,41 +75,42 @@ macro_rules! node_trait{
         }
         
         // This removes both of a duplicate
-        pub fn remove(&mut self, value: T){
-            match self.left{
-                Some(ref mut left) => {
-                    if left.value == value{
-                        match (left.left, left.right){
-                            (Some(ref mut l_left), Some(ref mut l_right)) => {left = l_left}, // replace with minimum func
-                            (Some(ref mut l_left), None) => {left = l_left},
-                            (None, Some(ref mut l_right)) => {left = l_right},
-                            (None, None) => {left.take()}
-                        };
-                    }
-                    else{
-                        left.remove(value);
-                    }
-                },
-                None => {}
+        // This goes over whole tree when doesnt need to
+        pub fn remove(mut self, value: T) -> Self{
+            let check_node = |opt_node: Option<Box<$U<T>>>, value: T|{
+                match opt_node{
+                    Some(mut node) => {
+                        if node.value == value{
+                            if node.left.is_some(){
+                                 if node.right.is_some(){
+                                     node = Box::new(node.minimum());
+                                 }
+                                 else{
+                                    node = node.left.unwrap();
+                                 }
+                            }
+                            else{
+                                if node.right.is_some(){
+                                    node = node.right.unwrap();
+                                }
+                                else{
+                                    Some(node).take(); // sets value to None
+                                }
+                            }
+                        }
+                        else{
+                            node.remove(value);
+                        }
+                    },
+                    None => {}
+                }
             };
-            /*
-            match self.right{
-                Some(ref right) => { 
-                    if right.value == value{
-                        *right = match (right.left, right.right){
-                            (Some(ref r_left), Some(ref r_right)) => {r_left},
-                            (Some(ref r_left), None) => r_left,
-                            (None, Some(ref r_right)) => r_right,
-                            (None, None) => None
-                        };
-                    }
-                    else{
-                        right.remove(value);
-                    }
-                },
-                None => {}
-            };*/
+            check_node(self.left, value);
+            check_node(self.right, value);
+
+            self
         }
+
         pub fn inorder(&mut self, func: &Fn(&mut T)){
             match self.left{
                 Some(ref mut left) => left.inorder(func),

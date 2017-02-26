@@ -53,6 +53,8 @@ fn main() {
     rb_bst.print_inorder();
     rb_bst.smart_reverse(0.0);
     rb_bst.print_inorder();
+    let mut two = rb_bst.remove(0.1);
+    two.print_inorder();
     //bst.root.tree_insert(5).tree_insert(2).tree_insert(13).tree_insert(40);//.unwrap().print_in_order();
     //bst.root.tree_insert(2);
     //bst.root.tree_insert(13);
